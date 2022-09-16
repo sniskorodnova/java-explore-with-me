@@ -17,6 +17,24 @@ public class RestExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler
+    protected ResponseEntity<Object> handleUserNotAllowedToViewEvent(UserNotAllowedToViewEventException ex) {
+        ApiError apiError = new ApiError(BAD_REQUEST, ex);
+        apiError.setMessage("User can't view this event");
+        apiError.setReason(ex.getLocalizedMessage());
+        //    apiError.setErrors(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler
+    protected ResponseEntity<Object> handleEventCantBeModified(EventCantBeModifiedException ex) {
+        ApiError apiError = new ApiError(BAD_REQUEST, ex);
+        apiError.setMessage("Event can't be modified");
+        apiError.setReason(ex.getLocalizedMessage());
+        //    apiError.setErrors(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }

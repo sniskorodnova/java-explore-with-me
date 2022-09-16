@@ -1,6 +1,6 @@
 package ru.practicum.ewm.model.event;
 
-public enum Status {
+public enum State {
     PENDING,
     PUBLISHED,
     REJECTED

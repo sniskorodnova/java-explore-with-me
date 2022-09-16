@@ -1,10 +1,10 @@
 package ru.practicum.ewm.model.event;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.location.Location;
+import ru.practicum.ewm.model.users.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -40,7 +40,10 @@ public class Event {
     private Long participantLimit;
     @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;
+    @ManyToOne
+    @JoinColumn(name = "initiator_id")
+    private User initiator;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    private State state;
 }

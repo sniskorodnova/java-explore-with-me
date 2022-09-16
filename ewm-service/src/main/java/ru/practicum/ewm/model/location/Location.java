@@ -1,5 +1,6 @@
 package ru.practicum.ewm.model.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 /**
- * Класс, описывающий модель категории
+ * Класс, описывающий модель локации
  */
 @Entity
 @Table(name = "location", schema = "public")
@@ -17,6 +18,7 @@ import javax.persistence.*;
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     @Column(nullable = false)
     private Double lat;

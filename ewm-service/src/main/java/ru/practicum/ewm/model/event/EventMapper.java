@@ -1,8 +1,5 @@
 package ru.practicum.ewm.model.event;
 
-import ru.practicum.ewm.model.category.Category;
-import ru.practicum.ewm.model.category.CategoryDto;
-import ru.practicum.ewm.model.category.NewCategoryDto;
 import ru.practicum.ewm.model.location.Location;
 
 public class EventMapper {
@@ -18,7 +15,8 @@ public class EventMapper {
                 event.getPaid(),
                 event.getParticipantLimit(),
                 event.getRequestModeration(),
-                event.getStatus()
+                event.getInitiator(),
+                event.getState()
         );
     }
 
@@ -34,14 +32,8 @@ public class EventMapper {
                 newEventDto.getPaid(),
                 newEventDto.getParticipantLimit(),
                 newEventDto.getRequestModeration(),
+                null,
                 null
         );
     }
-
- /*   public static Event toEvent(EventDto eventDto) {
-        return new Event(
-                categoryDto.getId(),
-                categoryDto.getName()
-        );
-    }*/
 }
