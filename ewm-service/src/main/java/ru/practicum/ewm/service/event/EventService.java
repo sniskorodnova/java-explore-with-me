@@ -33,5 +33,5 @@ public interface EventService {
     List<EventDto> getAllPublic(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
                                 LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
 
-    EventDto getByIdPublic(Long eventId);
+    EventDto getByIdPublic(Long eventId, String ip, String uri);
 }

@@ -9,8 +9,10 @@ import ru.practicum.ewm.exception.NoHeaderException;
 import ru.practicum.ewm.model.event.EventDto;
 import ru.practicum.ewm.model.event.NewEventDto;
 import ru.practicum.ewm.model.event.NewShortEventDto;
+import ru.practicum.ewm.service.event.EventClient;
 import ru.practicum.ewm.service.event.EventService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -183,9 +185,9 @@ public class EventController {
      * Метод для получения информации о событии неавторизованным пользователем
      */
     @GetMapping("/events/{eventId}")
-    public EventDto getByIdPublic(@PathVariable Long eventId) {
+    public EventDto getByIdPublic(@PathVariable Long eventId, HttpServletRequest request) {
         log.info("Входящий запрос на получение информации о событии с id = " + eventId
                 + " неавторизованным пользователем");
-        return eventService.getByIdPublic(eventId);
+        return eventService.getByIdPublic(eventId, request.getRemoteAddr(), request.getRequestURI());
     }
 }

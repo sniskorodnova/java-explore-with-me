@@ -1,7 +1,6 @@
 package ru.practicum.ewm.client;
 
 import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -14,16 +13,13 @@ public class BaseClient {
 
     public BaseClient(RestTemplate rest) {
         this.rest = rest;
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        rest.setRequestFactory(requestFactory);
     }
 
     protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
-    private <T> ResponseEntity<Object> post(String path,
-                                            T body) {
+    protected  <T> ResponseEntity<Object> post(String path, T body) {
         return makeAndSendRequest(HttpMethod.POST, path, null, body);
     }
 
@@ -36,6 +32,7 @@ public class BaseClient {
             if (parameters != null) {
                 statsResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
+                System.out.println("path: " + path);
                 statsResponse = rest.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {

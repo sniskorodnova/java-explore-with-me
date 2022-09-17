@@ -8,6 +8,7 @@ import ru.practicum.ewm.exception.IllegalEventStateException;
 import ru.practicum.ewm.exception.UserNotAllowedToViewEventException;
 import ru.practicum.ewm.model.event.*;
 import ru.practicum.ewm.model.location.Location;
+import ru.practicum.ewm.model.stats.NewStatsDto;
 import ru.practicum.ewm.model.users.User;
 import ru.practicum.ewm.storage.event.EventRepository;
 import ru.practicum.ewm.storage.location.LocationRepository;
@@ -22,13 +23,15 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
+    private final EventClient eventClient;
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository, LocationRepository locationRepository,
-                            UserRepository userRepository) {
+                            UserRepository userRepository, EventClient eventClient) {
         this.eventRepository = eventRepository;
         this.locationRepository = locationRepository;
         this.userRepository = userRepository;
+        this.eventClient = eventClient;
     }
 
     @Override
@@ -155,12 +158,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto getByIdPublic(Long eventId) {
+    public EventDto getByIdPublic(Long eventId, String ip, String uri) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (event.getState() == State.PUBLISHED) {
+            eventClient.create(new NewStatsDto("ewm", uri, ip));
             return EventMapper.toEventDto(event);
         } else {
-            throw new UserNotAllowedToViewEventException("Event can't be viewed by unauthorized user");
+            throw new UserNotAllowedToViewEventException("Event can't be viewed due to its status");
         }
     }
 }
