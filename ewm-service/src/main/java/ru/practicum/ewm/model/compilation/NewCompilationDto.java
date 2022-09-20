@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class NewCompilationDto {
     private String title;
-    private Boolean pinned;
+    private Boolean pinned = false;
     @JsonProperty("events")
     Set<Long> eventsId;
 }

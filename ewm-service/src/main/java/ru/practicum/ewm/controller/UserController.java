@@ -23,11 +23,11 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * Метод для создания пользователя
+     * Метод для создания пользователя. В хедере передается авторизация для админа
      */
     @PostMapping()
     public UserDto create(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                          @RequestBody NewUserDto newUser) {
+                          @RequestBody @Validated NewUserDto newUser) {
         log.info("Входящий запрос на создание пользователя: " + newUser.toString());
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
@@ -37,21 +37,27 @@ public class UserController {
     }
 
     /**
-     * Метод для получения списка всех пользователей
+     * Метод для получения списка всех пользователей. В хедере передается авторизация для админа
      */
     @GetMapping()
     public List<UserDto> getAll(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                                @RequestParam Integer from, @RequestParam Integer size) {
+                                @RequestParam (required = false) List<Integer> ids,
+                                @RequestParam (required = false) Integer from,
+                                @RequestParam (required = false) Integer size) {
         log.info("Входящий запрос на получение списка всех пользователей");
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
         } else {
-            return userService.getAll(from, size);
+            if (ids == null) {
+                return userService.getAll(from, size);
+            } else {
+                return userService.getAllByIds(ids);
+            }
         }
     }
 
     /**
-     * Метод для удаления пользователя
+     * Метод для удаления пользователя. В хедере передается авторизация для админа
      */
     @DeleteMapping("/{userId}")
     public void delete(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,

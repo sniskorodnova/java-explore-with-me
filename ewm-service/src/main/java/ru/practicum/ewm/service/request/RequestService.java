@@ -10,7 +10,13 @@ import java.util.List;
 public interface RequestService {
     RequestDto create(Long userId, Long eventId);
 
-    void cancel(Long userId, Long requestId);
+    RequestDto cancel(Long userId, Long requestId);
 
     List<RequestDto> getAllForUser(Long userId);
+
+    List<RequestDto> getAllForUserEvents(Long userId, Long eventId);
+
+    RequestDto confirmRequest(Long userId, Long eventId, Long reqId);
+
+    RequestDto rejectRequest(Long userId, Long eventId, Long reqId);
 }

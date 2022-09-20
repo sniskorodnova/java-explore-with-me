@@ -1,7 +1,7 @@
 package ru.practicum.ewm.model.users;
 
 /**
- * Класс, описывающий маппинг сущности полбзователя в dto и обратно
+ * Класс, описывающий маппинг сущности пользователя в dto и обратно
  */
 public class UserMapper {
     public static UserDto toUserDto(User user) {
@@ -17,14 +17,6 @@ public class UserMapper {
                 null,
                 newUserDto.getName(),
                 newUserDto.getEmail()
-        );
-    }
-
-    public static User toUser(UserDto userDto) {
-        return new User(
-                userDto.getId(),
-                userDto.getName(),
-                userDto.getEmail()
         );
     }
 }

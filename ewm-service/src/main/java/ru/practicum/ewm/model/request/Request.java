@@ -3,7 +3,7 @@ package ru.practicum.ewm.model.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.model.event.State;
+import ru.practicum.ewm.model.event.EventState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,8 +25,8 @@ public class Request {
     @Column(name = "user_id", nullable = false)
     private Long userId;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private State state;
+    @Column(name = "state", nullable = false)
+    private RequestState requestState;
     @Column(nullable = false)
     private LocalDateTime created;
 }

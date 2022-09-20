@@ -1,17 +1,27 @@
 package ru.practicum.ewm.model.compilation;
 
 import ru.practicum.ewm.model.event.Event;
+import ru.practicum.ewm.model.event.EventDtoWithViews;
+import ru.practicum.ewm.model.event.EventMapper;
 
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Класс, описывающий маппинг сущности подборки событий в dto и обратно
+ */
 public class CompilationMapper {
     public static CompilationDto toCompilationDto(Compilation compilation) {
+        Set<EventDtoWithViews> eventsWithViews = new HashSet<>();
+        for (Event event : compilation.getEvents()) {
+            EventDtoWithViews eventView = EventMapper.toEventDtoWithViews(event);
+            eventsWithViews.add(eventView);
+        }
         return new CompilationDto(
                 compilation.getId(),
                 compilation.getTitle(),
                 compilation.getPinned(),
-                compilation.getEvents()
+                eventsWithViews
         );
     }
 

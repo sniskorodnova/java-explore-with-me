@@ -1,7 +1,9 @@
 package ru.practicum.ewm.model.event;
 
-public enum State {
+import java.util.Optional;
+
+public enum EventState {
     PENDING,
     PUBLISHED,
-    REJECTED
+    REJECTED;
 }

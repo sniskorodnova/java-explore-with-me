@@ -1,15 +1,15 @@
-package ru.practicum.ewm.service.request;
+package ru.practicum.ewm.model.request;
 
-import ru.practicum.ewm.model.request.Request;
-import ru.practicum.ewm.model.request.RequestDto;
-
+/**
+ * Класс, описывающий маппинг сущности заявки на участие в событии в dto
+ */
 public class RequestMapper {
     public static RequestDto toRequestDto(Request request) {
         return new RequestDto(
                 request.getId(),
                 request.getEventId(),
                 request.getUserId(),
-                request.getState(),
+                request.getRequestState(),
                 request.getCreated()
         );
     }

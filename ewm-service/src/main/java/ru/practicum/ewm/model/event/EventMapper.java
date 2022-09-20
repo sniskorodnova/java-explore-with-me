@@ -1,7 +1,11 @@
 package ru.practicum.ewm.model.event;
 
+import ru.practicum.ewm.model.category.CategoryDto;
 import ru.practicum.ewm.model.location.Location;
 
+/**
+ * Класс, описывающий маппинг сущности события в dto и обратно
+ */
 public class EventMapper {
     public static EventDto toEventDto(Event event) {
         return new EventDto(
@@ -11,12 +15,31 @@ public class EventMapper {
                 event.getDescription(),
                 event.getLocation(),
                 event.getEventDate(),
-                event.getCategoryId(),
+                new CategoryDto(event.getCategoryId(), null),
                 event.getPaid(),
                 event.getParticipantLimit(),
                 event.getRequestModeration(),
                 event.getInitiator(),
-                event.getState()
+                event.getEventState()
+        );
+    }
+
+    public static EventDtoWithViews toEventDtoWithViews(Event event) {
+        return new EventDtoWithViews(
+                event.getId(),
+                event.getTitle(),
+                event.getAnnotation(),
+                event.getDescription(),
+                event.getLocation(),
+                event.getEventDate(),
+                new CategoryDto(event.getCategoryId(), null),
+                event.getPaid(),
+                event.getParticipantLimit(),
+                event.getRequestModeration(),
+                event.getInitiator(),
+                event.getEventState(),
+                null,
+                null
         );
     }
 

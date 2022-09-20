@@ -1,9 +1,8 @@
 package ru.practicum.ewm.model.compilation;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.ewm.model.event.Event;
+import ru.practicum.ewm.model.event.EventDtoWithViews;
 
 import java.util.Set;
 
@@ -13,5 +12,5 @@ public class CompilationDto {
     private Long id;
     private String title;
     private Boolean pinned;
-    Set<Event> events;
+    Set<EventDtoWithViews> events;
 }

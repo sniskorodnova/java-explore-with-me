@@ -1,6 +1,7 @@
 package ru.practicum.ewm.service.event;
 
 import ru.practicum.ewm.model.event.EventDto;
+import ru.practicum.ewm.model.event.EventDtoWithViews;
 import ru.practicum.ewm.model.event.NewEventDto;
 import ru.practicum.ewm.model.event.NewShortEventDto;
 
@@ -15,14 +16,14 @@ public interface EventService {
 
     EventDto updateByUser(NewShortEventDto newShortEvent, Long userId);
 
-    List<EventDto> getAllForUser(Long userId, Integer from, Integer size);
+    List<EventDtoWithViews> getAllForUser(Long userId, Integer from, Integer size);
 
-    EventDto getById(Long userId, Long eventId);
+    EventDtoWithViews getByIdForUser(Long userId, Long eventId);
 
     EventDto rejectByUser(Long userId, Long eventId);
 
-    List<EventDto> getAllForAdmin(List<Integer> users, List<String> states, List<Integer> categories,
-                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
+    List<EventDtoWithViews> getAllForAdmin(List<Integer> users, List<String> states, List<Integer> categories,
+                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
     EventDto publishByAdmin(Long eventId);
 
@@ -30,8 +31,9 @@ public interface EventService {
 
     EventDto updateByAdmin(Long eventId, NewEventDto newEvent);
 
-    List<EventDto> getAllPublic(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
-                                LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
+    List<EventDtoWithViews> getAllPublic(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart,
+                                         LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from,
+                                         Integer size, String ip, String uri);
 
-    EventDto getByIdPublic(Long eventId, String ip, String uri);
+    EventDtoWithViews getByIdPublic(Long eventId, String ip, String uri);
 }

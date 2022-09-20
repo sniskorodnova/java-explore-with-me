@@ -7,9 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.exception.NoHeaderException;
 import ru.practicum.ewm.model.event.EventDto;
+import ru.practicum.ewm.model.event.EventDtoWithViews;
 import ru.practicum.ewm.model.event.NewEventDto;
 import ru.practicum.ewm.model.event.NewShortEventDto;
-import ru.practicum.ewm.service.event.EventClient;
 import ru.practicum.ewm.service.event.EventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,11 +28,11 @@ public class EventController {
     private final EventService eventService;
 
     /**
-     * Метод для создания события
+     * Метод для создания события. В хедере передается авторизация для залогиненного пользователя
      */
     @PostMapping("/users/{userId}/events")
     public EventDto create(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                           @PathVariable Long userId, @RequestBody NewEventDto newEvent) {
+                           @PathVariable Long userId, @RequestBody @Validated NewEventDto newEvent) {
         log.info("Входящий запрос на создание события: " + newEvent.toString());
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
@@ -42,11 +42,11 @@ public class EventController {
     }
 
     /**
-     * Метод для редактирования события
+     * Метод для редактирования события. В хедере передается авторизация для залогиненного пользователя
      */
     @PatchMapping("/users/{userId}/events")
     public EventDto updateByUser(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                           @PathVariable Long userId, @RequestBody NewShortEventDto newShortEvent) {
+                                 @PathVariable Long userId, @RequestBody @Validated NewShortEventDto newShortEvent) {
         log.info("Входящий запрос на редактирование события: " + newShortEvent.toString());
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
@@ -56,13 +56,15 @@ public class EventController {
     }
 
     /**
-     * Метод для получения всех событий, добавленный текущим пользователем
+     * Метод для получения всех событий, добавленных текущим пользователем с пагинацией
      */
     @GetMapping("/users/{userId}/events")
-    public List<EventDto> getAllForUser(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                                        @PathVariable Long userId, @RequestParam (defaultValue = "0") Integer from,
-                                        @RequestParam (defaultValue = "10") Integer size) {
-        log.info("Входящий запрос на получение списка всех событий для пользователя с id = : " + userId);
+    public List<EventDtoWithViews> getAllForUser(@RequestHeader(value = "X-Sharer-User-Id", required = false)
+                                                 Long userHeader,
+                                                 @PathVariable Long userId, @RequestParam(defaultValue = "0")
+                                                 Integer from,
+                                                 @RequestParam(defaultValue = "10") Integer size) {
+        log.info("Входящий запрос на получение списка всех событий для пользователя с id = " + userId);
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
         } else {
@@ -71,17 +73,17 @@ public class EventController {
     }
 
     /**
-     * Метод для получения информации о событии, добавленном текущим пользователем
+     * Метод для получения информации о событии по id, добавленном текущим пользователем
      */
     @GetMapping("/users/{userId}/events/{eventId}")
-    public EventDto getById(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                            @PathVariable Long userId, @PathVariable Long eventId) {
+    public EventDtoWithViews getByIdForUser(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
+                                            @PathVariable Long userId, @PathVariable Long eventId) {
         log.info("Входящий запрос на получение информации о событии с id = " + eventId + ", добавленном пользователем"
                 + " с id = " + userId);
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
         } else {
-            return eventService.getById(userId, eventId);
+            return eventService.getByIdForUser(userId, eventId);
         }
     }
 
@@ -101,19 +103,21 @@ public class EventController {
     }
 
     /**
-     * Метод для получения информации о событиях админом
+     * Метод для получения информации о событиях админом с учетом условий фильтрации
      */
     @GetMapping("/admin/events")
-    public List<EventDto> getAllForAdmin(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                                         @RequestParam List<Integer> users, @RequestParam List<String> states,
-                                         @RequestParam List<Integer> categories,
-                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                             LocalDateTime rangeStart,
-                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                             LocalDateTime rangeEnd, @RequestParam (defaultValue = "0") Integer from,
-                                         @RequestParam(defaultValue = "10") Integer size) {
-        //дописать лог
-        log.info("Входящий запрос на получение информации о всех событиях для админа");
+    public List<EventDtoWithViews> getAllForAdmin(@RequestHeader(value = "X-Sharer-User-Id", required = false)
+                                                  Long userHeader,
+                                                  @RequestParam List<Integer> users, @RequestParam List<String> states,
+                                                  @RequestParam List<Integer> categories,
+                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                  LocalDateTime rangeStart,
+                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                  LocalDateTime rangeEnd, @RequestParam(defaultValue = "0") Integer from,
+                                                  @RequestParam(defaultValue = "10") Integer size) {
+        log.info("Входящий запрос на получение информации о всех событиях для админа: users = " + users
+                + ", states = " + states + ", categories = " + categories + ", rangeStart = " + rangeStart
+                + ", rangeEnd = " + rangeEnd);
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
         } else {
@@ -127,7 +131,8 @@ public class EventController {
     @PutMapping("/admin/events/{eventId}")
     public EventDto updateByAdmin(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
                                   @PathVariable Long eventId, @RequestBody NewEventDto newEvent) {
-        log.info("Входящий запрос на редактирования события с id = " + eventId + " админом");
+        log.info("Входящий запрос на редактирования события с id = " + eventId + " админом. Новые данные: "
+                + newEvent.toString());
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
         } else {
@@ -140,7 +145,7 @@ public class EventController {
      */
     @PatchMapping("/admin/events/{eventId}/publish")
     public EventDto publishByAdmin(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                                         @PathVariable Long eventId) {
+                                   @PathVariable Long eventId) {
         log.info("Входящий запрос на публикацию события с id = " + eventId + " админом");
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
@@ -154,7 +159,7 @@ public class EventController {
      */
     @PatchMapping("/admin/events/{eventId}/reject")
     public EventDto rejectByAdmin(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userHeader,
-                                   @PathVariable Long eventId) {
+                                  @PathVariable Long eventId) {
         log.info("Входящий запрос на отклонение события с id = " + eventId + " админом");
         if (userHeader == null) {
             throw new NoHeaderException("No header in the request");
@@ -164,28 +169,34 @@ public class EventController {
     }
 
     /**
-     * Метод для получения событий неавторизованным пользователем
+     * Метод для получения событий с параметрами фильтрации неавторизованным пользователем
      */
     @GetMapping("/events")
-    public List<EventDto> getAllPublic(@RequestParam String text, @RequestParam Integer[] categories,
-                                       @RequestParam Boolean paid,
-                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                           LocalDateTime rangeStart,
-                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                           LocalDateTime rangeEnd,
-                                       @RequestParam Boolean onlyAvailable, @RequestParam String sort,
-                                       @RequestParam (defaultValue = "0") Integer from,
-                                       @RequestParam(defaultValue = "10") Integer size
-                                       ) {
-        log.info("Входящий запрос на получение всех событий неавторизованным пользователем");
-        return eventService.getAllPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+    public List<EventDtoWithViews> getAllPublic(@RequestParam String text, @RequestParam List<Integer> categories,
+                                                @RequestParam Boolean paid, @RequestParam(required = false)
+                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                    LocalDateTime rangeStart,
+                                                @RequestParam(required = false)
+                                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                LocalDateTime rangeEnd,
+                                                @RequestParam (defaultValue = "false") Boolean onlyAvailable,
+                                                @RequestParam String sort,
+                                                @RequestParam(defaultValue = "0") Integer from,
+                                                @RequestParam(defaultValue = "10") Integer size,
+                                                HttpServletRequest request) {
+        log.info("Входящий запрос на получение всех событий неавторизованным пользователем с параметрами "
+                + "фильтрации: text = " + text + ", categories = " + categories + ", paid = " + paid + ", rangeStart = "
+                + rangeStart + ", rangeEnd = " + rangeEnd + ", onlyAvailable = " + onlyAvailable + ", sort = "
+                + sort + ", from = " + from + ", size = " + size);
+        return eventService.getAllPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size,
+                request.getRemoteAddr(), request.getRequestURI());
     }
 
     /**
-     * Метод для получения информации о событии неавторизованным пользователем
+     * Метод для получения информации о событии по его id неавторизованным пользователем
      */
     @GetMapping("/events/{eventId}")
-    public EventDto getByIdPublic(@PathVariable Long eventId, HttpServletRequest request) {
+    public EventDtoWithViews getByIdPublic(@PathVariable Long eventId, HttpServletRequest request) {
         log.info("Входящий запрос на получение информации о событии с id = " + eventId
                 + " неавторизованным пользователем");
         return eventService.getByIdPublic(eventId, request.getRemoteAddr(), request.getRequestURI());

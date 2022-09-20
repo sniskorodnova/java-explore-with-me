@@ -32,7 +32,6 @@ public class BaseClient {
             if (parameters != null) {
                 statsResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
-                System.out.println("path: " + path);
                 statsResponse = rest.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
@@ -54,13 +53,10 @@ public class BaseClient {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
         }
-
         ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.status(response.getStatusCode());
-
         if (response.hasBody()) {
             return responseBuilder.body(response.getBody());
         }
-
         return responseBuilder.build();
     }
 }

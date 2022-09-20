@@ -13,6 +13,9 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Класс, имплементирующий интерфейс для работы сервиса статистики
+ */
 @Service
 public class StatsServiceImpl implements StatsService {
     private final StatsRepository statsRepository;
@@ -24,6 +27,9 @@ public class StatsServiceImpl implements StatsService {
         this.em = em;
     }
 
+    /**
+     * Метод для создания записи об обращении к эндпойнту
+     */
     @Override
     public void create(NewStatsDto newStats) {
         Stats stats = StatsMapper.newToStats(newStats);
@@ -31,6 +37,9 @@ public class StatsServiceImpl implements StatsService {
         statsRepository.save(stats);
     }
 
+    /**
+     * Метод для получения информации о количестве просмотров для эндпойнта по заданным параметрам
+     */
     @Override
     @Transactional(readOnly = true)
     public List<StatsDto> get(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Класс-контроллер для работы с категориями
+ * Класс-контроллер для работы со статистикой
  */
 @Validated
 @RestController
@@ -38,8 +38,10 @@ public class StatsController {
     @GetMapping("/stats")
     public List<StatsDto> create(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-                                 @RequestParam List<String> uris, @RequestParam Boolean unique) {
-        log.info("Входящий запрос на получение статистики");
+                                 @RequestParam List<String> uris,
+                                 @RequestParam (defaultValue = "false") Boolean unique) {
+        log.info("Входящий запрос на получение статистики по параметрам: start = " + start + ", end = "
+                + end + ", uris = " + uris + ", unique = " + unique);
         return statsService.get(start, end, uris, unique);
     }
 }

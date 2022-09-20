@@ -44,6 +44,6 @@ public class Event {
     @JoinColumn(name = "initiator_id")
     private User initiator;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private State state;
+    @Column(name = "state", nullable = false)
+    private EventState eventState;
 }
