@@ -16,7 +16,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("No auth for request");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -25,7 +29,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("User can't view this event");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -34,7 +42,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Event can't be modified");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -43,7 +55,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._409_CONFLICT.code, ex);
         apiError.setMessage("Integrity constraint has been violated");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -52,7 +68,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._409_CONFLICT.code, ex);
         apiError.setMessage("Value is invalid");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -61,7 +81,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Incorrect field value");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -70,7 +94,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Category can't be deleted");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -79,7 +107,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._404_NOT_FOUND.code, ex);
         apiError.setMessage("Category can't be viewed");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -88,7 +120,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._404_NOT_FOUND.code, ex);
         apiError.setMessage("Event can't be modified due to its status");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -97,7 +133,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Event can't be created");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -106,7 +146,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._404_NOT_FOUND.code, ex);
         apiError.setMessage("No such user");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -115,7 +159,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._404_NOT_FOUND.code, ex);
         apiError.setMessage("No such event");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -124,7 +172,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Request can't be created");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -133,7 +185,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Request can't be created");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -142,7 +198,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Request can't be updated");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -151,7 +211,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Request can't be updated");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 
@@ -160,7 +224,11 @@ public class RestExceptionHandler {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Compilation can't be updated");
         apiError.setReason(ex.getLocalizedMessage());
-        apiError.setErrors(Arrays.toString(ex.getStackTrace()));
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
         return apiError;
     }
 }

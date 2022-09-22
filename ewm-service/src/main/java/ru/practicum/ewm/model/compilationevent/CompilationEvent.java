@@ -10,6 +10,7 @@ import javax.persistence.*;
  * Класс, описывающий модель связи подборки с событиями
  */
 @Entity
+@Table(name = "compilation_event")
 @IdClass(CompilationEventId.class)
 @Data
 @AllArgsConstructor
