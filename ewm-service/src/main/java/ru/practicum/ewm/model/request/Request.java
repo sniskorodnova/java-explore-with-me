@@ -3,7 +3,6 @@ package ru.practicum.ewm.model.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.model.event.EventState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -337,7 +337,7 @@ public class EventServiceImpl implements EventService {
                 eventListWithView.sort(new EventViewsComparator());
             }
             int fromIndex = from * size;
-            if(eventListWithView.size() <= fromIndex){
+            if (eventListWithView.size() <= fromIndex) {
                 return Collections.emptyList();
             }
             return eventListWithView.subList(fromIndex, Math.min(fromIndex + size, eventListWithView.size()));

@@ -9,7 +9,6 @@ import ru.practicum.ewm.model.category.CategoryDto;
 import ru.practicum.ewm.model.category.NewCategoryDto;
 import ru.practicum.ewm.service.category.CategoryService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
