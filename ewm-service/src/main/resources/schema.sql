@@ -66,3 +66,14 @@ CREATE TABLE IF NOT EXISTS compilation_event (
 
 CREATE UNIQUE INDEX IF NOT EXISTS compilation_event_uindex
     ON compilation_event (compilation_id, event_id);
+
+CREATE TABLE IF NOT EXISTS comment (
+    id BIGINT NOT NULL,
+    text TEXT NOT NULL,
+    user_id BIGINT NOT NULL,
+    event_id BIGINT NOT NULL,
+    created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    CONSTRAINT FK_COMMENT_ON_USER FOREIGN KEY (user_id) REFERENCES users (id),
+    CONSTRAINT FK_COMMENT_ON_EVENT FOREIGN KEY (event_id) REFERENCES event (id)
+);
