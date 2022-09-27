@@ -7,7 +7,6 @@ import ru.practicum.ewm.model.location.Location;
 import ru.practicum.ewm.model.users.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
