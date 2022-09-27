@@ -16,7 +16,7 @@ import ru.practicum.ewm.service.compilation.CompilationService;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/compilations")
-public class AdminController {
+public class AdminCompilationController {
     private final CompilationService compilationService;
 
     /**
@@ -24,7 +24,7 @@ public class AdminController {
      */
     @PostMapping
     public CompilationDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
-                                 @RequestBody NewCompilationDto newCompilation) {
+                                 @RequestBody @Validated NewCompilationDto newCompilation) {
         log.info("Входящий запрос на создание подборки событий " + newCompilation);
         return compilationService.create(newCompilation);
     }

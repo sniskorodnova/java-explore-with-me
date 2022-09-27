@@ -3,6 +3,7 @@ package ru.practicum.ewm.exception;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -10,20 +11,6 @@ import java.util.Arrays;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
-
-    @ExceptionHandler
-    protected ApiError handleNoAuthException(NoHeaderException ex) {
-        ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
-        apiError.setMessage("No auth for request");
-        apiError.setReason(ex.getLocalizedMessage());
-        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
-            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
-        } else {
-            apiError.setErrors(null);
-        }
-        return apiError;
-    }
-
     @ExceptionHandler
     protected ApiError handleUserNotAllowedToViewEvent(UserNotAllowedToViewEventException ex) {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
@@ -223,6 +210,19 @@ public class RestExceptionHandler {
     protected ApiError handleCompilationNotFound(CompilationNotFoundException ex) {
         ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
         apiError.setMessage("Compilation can't be updated");
+        apiError.setReason(ex.getLocalizedMessage());
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
+        return apiError;
+    }
+
+    @ExceptionHandler
+    protected ApiError handleNoHeader(MissingRequestHeaderException ex) {
+        ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
+        apiError.setMessage("Request can't be processed");
         apiError.setReason(ex.getLocalizedMessage());
         if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
             apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());

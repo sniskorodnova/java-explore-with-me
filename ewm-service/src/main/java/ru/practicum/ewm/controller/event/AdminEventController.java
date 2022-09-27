@@ -8,30 +8,26 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.event.EventDto;
 import ru.practicum.ewm.model.event.EventDtoWithViews;
 import ru.practicum.ewm.model.event.NewEventDto;
-import ru.practicum.ewm.model.event.NewShortEventDto;
 import ru.practicum.ewm.service.event.EventService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Класс-контроллер для работы с событиями
+ * Класс-контроллер для работы с администраторскими запросами для событий
  */
 @Validated
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping()
-public class EventController {
+@RequestMapping(path = "/admin/events")
+public class AdminEventController {
     private final EventService eventService;
-
-
 
     /**
      * Метод для получения информации о событиях админом с учетом условий фильтрации
      */
-    @GetMapping("/admin/events")
+    @GetMapping
     public List<EventDtoWithViews> getAllForAdmin(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                                   @RequestParam List<Integer> users, @RequestParam List<String> states,
                                                   @RequestParam List<Integer> categories,
@@ -49,9 +45,9 @@ public class EventController {
     /**
      * Метод для редактирования события админом
      */
-    @PutMapping("/admin/events/{eventId}")
+    @PutMapping("/{eventId}")
     public EventDto updateByAdmin(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
-                                  @PathVariable Long eventId, @RequestBody NewEventDto newEvent) {
+                                  @PathVariable Long eventId, @RequestBody @Validated NewEventDto newEvent) {
         log.info("Входящий запрос на редактирования события с id = " + eventId + " админом. Новые данные: "
                 + newEvent.toString());
         return eventService.updateByAdmin(eventId, newEvent);
@@ -60,7 +56,7 @@ public class EventController {
     /**
      * Метод для публикации события админом
      */
-    @PatchMapping("/admin/events/{eventId}/publish")
+    @PatchMapping("/{eventId}/publish")
     public EventDto publishByAdmin(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                    @PathVariable Long eventId) {
         log.info("Входящий запрос на публикацию события с id = " + eventId + " админом");
@@ -70,12 +66,10 @@ public class EventController {
     /**
      * Метод для отклонения события админом
      */
-    @PatchMapping("/admin/events/{eventId}/reject")
+    @PatchMapping("/{eventId}/reject")
     public EventDto rejectByAdmin(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                   @PathVariable Long eventId) {
         log.info("Входящий запрос на отклонение события с id = " + eventId + " админом");
         return eventService.rejectByAdmin(eventId);
     }
-
-
 }

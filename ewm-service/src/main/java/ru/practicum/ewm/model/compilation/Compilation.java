@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 /**
- * Класс, описывающий модель подборки событий
+ * Класс, описывающий dto подборки событий для бд
  */
 @Entity
 @Table(name = "compilation", schema = "public")

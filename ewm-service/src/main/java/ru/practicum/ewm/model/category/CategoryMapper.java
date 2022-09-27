@@ -1,8 +1,12 @@
 package ru.practicum.ewm.model.category;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Класс, описывающий маппинг сущности категории в dto и обратно
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoryMapper {
     public static CategoryDto toCategoryDto(Category category) {
         return new CategoryDto(

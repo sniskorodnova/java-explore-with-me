@@ -1,4 +1,4 @@
-package ru.practicum.ewm.controller;
+package ru.practicum.ewm.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,20 +11,20 @@ import ru.practicum.ewm.service.users.UserService;
 import java.util.List;
 
 /**
- * Класс-контроллер для работы с пользователями
+ * Класс-контроллер для работы с адмиистраторскими запросами для пользователями
  */
 @Validated
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/admin/users")
-public class UserController {
+public class AdminUserController {
     private final UserService userService;
 
     /**
      * Метод для создания пользователя. В хедере передается авторизация для админа
      */
-    @PostMapping()
+    @PostMapping
     public UserDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                           @RequestBody @Validated NewUserDto newUser) {
         log.info("Входящий запрос на создание пользователя: " + newUser.toString());
@@ -34,7 +34,7 @@ public class UserController {
     /**
      * Метод для получения списка всех пользователей. В хедере передается авторизация для админа
      */
-    @GetMapping()
+    @GetMapping
     public List<UserDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                 @RequestParam(required = false) List<Integer> ids,
                                 @RequestParam(required = false, defaultValue = "0") Integer from,

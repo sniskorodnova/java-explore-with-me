@@ -1,11 +1,14 @@
 package ru.practicum.ewm.model.event;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.category.CategoryDto;
 import ru.practicum.ewm.model.location.Location;
 
 /**
  * Класс, описывающий маппинг сущности события в dto и обратно
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventMapper {
     public static EventDto toEventDto(Event event) {
         return new EventDto(
@@ -20,7 +23,9 @@ public class EventMapper {
                 event.getParticipantLimit(),
                 event.getRequestModeration(),
                 event.getInitiator(),
-                event.getEventState()
+                event.getEventState(),
+                event.getCreatedOn(),
+                event.getPublishedOn()
         );
     }
 
@@ -39,7 +44,9 @@ public class EventMapper {
                 event.getInitiator(),
                 event.getEventState(),
                 null,
-                null
+                null,
+                event.getCreatedOn(),
+                event.getPublishedOn()
         );
     }
 
@@ -55,6 +62,8 @@ public class EventMapper {
                 newEventDto.getPaid(),
                 newEventDto.getParticipantLimit(),
                 newEventDto.getRequestModeration(),
+                null,
+                null,
                 null,
                 null
         );

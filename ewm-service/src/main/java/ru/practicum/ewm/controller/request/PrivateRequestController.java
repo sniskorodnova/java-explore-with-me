@@ -10,20 +10,20 @@ import ru.practicum.ewm.service.request.RequestService;
 import java.util.List;
 
 /**
- * Класс-контроллер для работы с заявками на участие в событиях
+ * Класс-контроллер для работы с приватными запросами для заявок на участие в событиях
  */
 @Validated
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(path = "/users")
-public class RequestController {
+@RequestMapping(path = "/users/{userId}")
+public class PrivateRequestController {
     private final RequestService requestService;
 
     /**
-     * Метод для создания заявки на участие в событии от текущего пользователя. Методу требуется авторизация
+     * Метод для создания заявки на участие в событии от текущего пользователя
      */
-    @PostMapping("/{userId}/requests")
+    @PostMapping("/requests")
     public RequestDto create(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                              @PathVariable Long userId, @RequestParam Long eventId) {
         log.info("Входящий запрос на создание заявки на участие в событии с id = " + eventId
@@ -34,7 +34,7 @@ public class RequestController {
     /**
      * Метод для отмены текущим пользователем своей заявки на участие в событии
      */
-    @PatchMapping("/{userId}/requests/{requestId}/cancel")
+    @PatchMapping("/requests/{requestId}/cancel")
     public RequestDto cancel(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                              @PathVariable Long userId, @PathVariable Long requestId) {
         log.info("Входящий запрос на отмену заявки на участие с id = " + requestId
@@ -45,7 +45,7 @@ public class RequestController {
     /**
      * Метод для получения информации о заявках текущего пользователя на участие в чужих событиях
      */
-    @GetMapping("/{userId}/requests")
+    @GetMapping("/requests")
     public List<RequestDto> getAllForUser(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                           @PathVariable Long userId) {
         log.info("Входящий запрос на получение всех заявок пользователя с id = " + userId + " на участие "
@@ -56,7 +56,7 @@ public class RequestController {
     /**
      * Метод для получения информации о заявках на участие в событиях текущего пользователя
      */
-    @GetMapping("/{userId}/events/{eventId}/requests")
+    @GetMapping("/events/{eventId}/requests")
     public List<RequestDto> getAllForUserEvents(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                                 @PathVariable Long userId, @PathVariable Long eventId) {
         log.info("Входящий запрос на получение всех заявок на участие в событиях пользователя с id = " + userId);
@@ -66,7 +66,7 @@ public class RequestController {
     /**
      * Метод для подтверждения чужой заявки на участие в событии текущего пользователя
      */
-    @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
+    @PatchMapping("/events/{eventId}/requests/{reqId}/confirm")
     public RequestDto confirmRequest(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                      @PathVariable Long userId, @PathVariable Long eventId, @PathVariable Long reqId) {
         log.info("Входящий запрос на подтверждение заявки с id = " + reqId + " на событие с id = " + eventId
@@ -77,7 +77,7 @@ public class RequestController {
     /**
      * Метод для отклонения чужой заявки на участие в событии текущего пользователя
      */
-    @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
+    @PatchMapping("/events/{eventId}/requests/{reqId}/reject")
     public RequestDto rejectRequest(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                                     @PathVariable Long userId, @PathVariable Long eventId, @PathVariable Long reqId) {
         log.info("Входящий запрос на отклонение заявки с id = " + reqId + " на событие с id = " + eventId

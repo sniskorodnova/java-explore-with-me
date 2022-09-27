@@ -2,6 +2,7 @@ package ru.practicum.ewm.service.request;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.*;
 import ru.practicum.ewm.model.event.Event;
 import ru.practicum.ewm.model.event.EventState;
@@ -37,6 +38,7 @@ public class RequestServiceImpl implements RequestService {
      * пре-модерация запросов на участие, то запрос автоматически переходит в состояние подтвержденного.
      * Если лимит запросов в событии равен 0, то заявки автоматически переходят в подтвержденные
      */
+    @Transactional
     @Override
     public RequestDto create(Long userId, Long eventId) {
         List<Request> checkIfAlreadyExists = requestRepository.findByUserIdAndEventIdAndRequestStateIsNot(userId,
@@ -82,6 +84,7 @@ public class RequestServiceImpl implements RequestService {
     /**
      * Метод для отмены текущим пользователем своей заявки на участие в событии
      */
+    @Transactional
     @Override
     public RequestDto cancel(Long userId, Long requestId) {
         if (requestRepository.findById(requestId).isEmpty()) {
@@ -101,6 +104,7 @@ public class RequestServiceImpl implements RequestService {
     /**
      * Метод для получения информации о заявках текущего пользователя на участие в чужих событиях
      */
+    @Transactional(readOnly = true)
     @Override
     public List<RequestDto> getAllForUser(Long userId) {
         List<RequestDto> foundList = new ArrayList<>();
@@ -118,6 +122,7 @@ public class RequestServiceImpl implements RequestService {
     /**
      * Метод для получения информации о заявках на участие в событиях текущего пользователя
      */
+    @Transactional(readOnly = true)
     @Override
     public List<RequestDto> getAllForUserEvents(Long userId, Long eventId) {
         if (eventRepository.findById(eventId).isEmpty()) {
@@ -147,6 +152,7 @@ public class RequestServiceImpl implements RequestService {
      * заявку, если уже достигнут лимит по заявкам на данное событие. Если при подтверждении данной заявки
      * лимит заявок для события исчерпан, то все неподтвержденные заявки отклоняются
      */
+    @Transactional
     @Override
     public RequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
         if (eventRepository.findById(eventId).isEmpty()) {
@@ -195,6 +201,7 @@ public class RequestServiceImpl implements RequestService {
     /**
      * Метод для отклонения чужой заявки на участие в событии текущего пользователя
      */
+    @Transactional
     @Override
     public RequestDto rejectRequest(Long userId, Long eventId, Long reqId) {
         if (eventRepository.findById(eventId).isEmpty()) {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.CompilationNotFoundException;
 import ru.practicum.ewm.model.category.CategoryMapper;
 import ru.practicum.ewm.model.compilation.Compilation;
@@ -52,6 +53,7 @@ public class CompilationServiceImpl implements CompilationService {
     /**
      * Метод для создания подборки событий
      */
+    @Transactional
     @Override
     public CompilationDto create(NewCompilationDto newCompilation) {
         Compilation compilation = compilationRepository.save(CompilationMapper.newToCompilation(newCompilation));
@@ -86,6 +88,7 @@ public class CompilationServiceImpl implements CompilationService {
     /**
      * Метод для удаления подборки событий по ее id
      */
+    @Transactional
     @Override
     public void deleteById(Long compId) {
         compilationRepository.deleteById(compId);
@@ -94,15 +97,17 @@ public class CompilationServiceImpl implements CompilationService {
     /**
      * Метод для удаления события из подборки событий по его id
      */
+    @Transactional
     @Override
     public void deleteEventByIdFromCompilation(Long compId, Long eventId) {
-        compilationEventRepository.deleteById(eventId);
+        compilationEventRepository.delete(new CompilationEvent(compId, eventId));
     }
 
 
     /**
      * Метод для добавления события в подборку событий по его id
      */
+    @Transactional
     @Override
     public void addEventByIdToCompilation(Long compId, Long eventId) {
         CompilationEvent compilationEvent = new CompilationEvent();
@@ -114,6 +119,7 @@ public class CompilationServiceImpl implements CompilationService {
     /**
      * Метод для открепления подборки событий на главной странице
      */
+    @Transactional
     @Override
     public void unpin(Long compId) {
         if (compilationRepository.findById(compId).isEmpty()) {
@@ -128,6 +134,7 @@ public class CompilationServiceImpl implements CompilationService {
     /**
      * Метод для закрепления подборки событий на главной странице
      */
+    @Transactional
     @Override
     public void pin(Long compId) {
         if (compilationRepository.findById(compId).isEmpty()) {
@@ -142,6 +149,7 @@ public class CompilationServiceImpl implements CompilationService {
     /**
      * Метод для получения информации по подборке событий
      */
+    @Transactional(readOnly = true)
     @Override
     public CompilationDto getById(Long compId) {
         if (compilationRepository.findById(compId).isEmpty()) {
@@ -165,6 +173,7 @@ public class CompilationServiceImpl implements CompilationService {
     /**
      * Метод для получения подборок событий по заданным фильтрам
      */
+    @Transactional(readOnly = true)
     @Override
     public List<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
         List<Compilation> foundList = compilationRepository.findByPinned(pinned, PageRequest.of(from / size, size));
@@ -179,8 +188,8 @@ public class CompilationServiceImpl implements CompilationService {
                 List<Request> confirmed = requestRepository.findByEventIdAndRequestState(event.getId(),
                         RequestState.ACCEPTED);
                 event.setConfirmedRequests(Long.parseLong(String.valueOf(confirmed.size())));
-                compilationList.add(compilationDto);
             }
+            compilationList.add(compilationDto);
         }
         return compilationList;
     }

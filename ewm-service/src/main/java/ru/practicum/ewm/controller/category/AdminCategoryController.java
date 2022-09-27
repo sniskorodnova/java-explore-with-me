@@ -16,7 +16,7 @@ import ru.practicum.ewm.service.category.CategoryService;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping()
-public class AdminController {
+public class AdminCategoryController {
     private final CategoryService categoryService;
 
     /**
