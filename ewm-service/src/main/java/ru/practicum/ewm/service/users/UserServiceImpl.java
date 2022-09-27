@@ -3,6 +3,7 @@ package ru.practicum.ewm.service.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.model.users.NewUserDto;
 import ru.practicum.ewm.model.users.User;
 import ru.practicum.ewm.model.users.UserDto;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Метод для создания пользователя. Email пользователя должен быть уникальным
      */
+    @Transactional
     @Override
     public UserDto create(NewUserDto newUser) {
         return UserMapper.toUserDto(userRepository.save(UserMapper.newToUser(newUser)));
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Метод для получения списка всех пользователей с пагинацией
      */
+    @Transactional(readOnly = true)
     @Override
     public List<UserDto> getAll(Integer from, Integer size) {
         List<UserDto> foundList = new ArrayList<>();
@@ -47,6 +50,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Метод для получения списка пользователей по переданным в запросе id
      */
+    @Transactional(readOnly = true)
     @Override
     public List<UserDto> getAllByIds(List<Integer> ids) {
         List<UserDto> foundList = new ArrayList<>();
@@ -59,6 +63,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Метод для удаления пользователя по id
      */
+    @Transactional
     @Override
     public void delete(Long userId) {
         userRepository.deleteById(userId);

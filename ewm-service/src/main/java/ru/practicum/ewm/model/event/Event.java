@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Класс, описывающий модель события
+ * Класс, описывающий dto события для бд
  */
 @Entity
 @Table(name = "event", schema = "public")
@@ -46,4 +46,8 @@ public class Event {
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false)
     private EventState eventState;
+    @Column(name = "created_on", nullable = false)
+    private LocalDateTime createdOn;
+    @Column(name = "published_on")
+    private LocalDateTime publishedOn;
 }

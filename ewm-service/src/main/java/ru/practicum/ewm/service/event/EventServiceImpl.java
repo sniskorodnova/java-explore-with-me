@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.*;
 import ru.practicum.ewm.model.category.CategoryMapper;
 import ru.practicum.ewm.model.event.*;
@@ -49,6 +50,7 @@ public class EventServiceImpl implements EventService {
     /**
      * Метод для создания события. Дата и время события не может быть раньше, чем через два часа от текущего момента
      */
+    @Transactional
     @Override
     public EventDto create(NewEventDto newEvent, Long userId) {
         if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
@@ -59,6 +61,7 @@ public class EventServiceImpl implements EventService {
             } else {
                 Event event = EventMapper.newToEvent(newEvent);
                 event.setEventState(EventState.PENDING);
+                event.setCreatedOn(LocalDateTime.now());
                 Location location = event.getLocation();
                 locationRepository.save(location);
                 User user = userRepository.findById(userId).get();
@@ -74,6 +77,7 @@ public class EventServiceImpl implements EventService {
      * ожидания модерации. Если редактируется отмененное событие, то оно автоматически переходит в состояние
      * ожидания модерации
      */
+    @Transactional
     @Override
     public EventDto updateByUser(NewShortEventDto newShortEvent, Long userId) {
         if (eventRepository.findById(newShortEvent.getId()).isEmpty()) {
@@ -93,6 +97,8 @@ public class EventServiceImpl implements EventService {
                         throw new EventCantBeCreatedException("Event time is less than in 2 hours or in the past");
                     } else {
                         if (newShortEvent.getParticipantLimit() != 0
+                                && requestRepository.findByEventIdAndRequestStateIsNotIn(newShortEvent.getId(),
+                                List.of(RequestState.CANCELLED, RequestState.REJECTED)).size() != 0
                                 && newShortEvent.getParticipantLimit()
                                 > requestRepository.findByEventIdAndRequestStateIsNotIn(newShortEvent.getId(),
                                 List.of(RequestState.CANCELLED, RequestState.REJECTED)).size()) {
@@ -118,6 +124,7 @@ public class EventServiceImpl implements EventService {
      * Метод для получения всех событий, добавленных текущим пользователем с пагинацией (в ответе выводится
      * количество просмотров по этому событию)
      */
+    @Transactional(readOnly = true)
     @Override
     public List<EventDtoWithViews> getAllForUser(Long userId, Integer from, Integer size) {
         List<EventDtoWithViews> foundList = new ArrayList<>();
@@ -149,6 +156,7 @@ public class EventServiceImpl implements EventService {
      * Метод для получения информации о событии по его id, добавленном текущим пользователем (в ответе выводится
      * количество просмотров по этому событию)
      */
+    @Transactional(readOnly = true)
     @Override
     public EventDtoWithViews getByIdForUser(Long userId, Long eventId) {
         if (eventRepository.findById(eventId).isEmpty()) {
@@ -175,6 +183,7 @@ public class EventServiceImpl implements EventService {
      * Метод для отмены события, добавленного текущим пользователем. Отменить можно событие только в
      * состоянии ожидания модерации
      */
+    @Transactional
     @Override
     public EventDto rejectByUser(Long userId, Long eventId) {
         if (eventRepository.findById(eventId).isEmpty()) {
@@ -199,6 +208,7 @@ public class EventServiceImpl implements EventService {
     /**
      * Метод для получения списка всех событий админом с учетом условий фильтрации
      */
+    @Transactional(readOnly = true)
     @Override
     public List<EventDtoWithViews> getAllForAdmin(List<Integer> users, List<String> states, List<Integer> categories,
                                                   LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from,
@@ -228,6 +238,7 @@ public class EventServiceImpl implements EventService {
      * Метод для публикации события админом. Дата начала события должна быть не раньше, чем за час от даты
      * публикации. Событие должно быть в состоянии ожидания модерации
      */
+    @Transactional
     @Override
     public EventDto publishByAdmin(Long eventId) {
         if (eventRepository.findById(eventId).isEmpty()) {
@@ -237,6 +248,7 @@ public class EventServiceImpl implements EventService {
             if (event.getEventState() == EventState.PENDING
                     && event.getEventDate().isAfter(LocalDateTime.now().plusHours(1))) {
                 event.setEventState(EventState.PUBLISHED);
+                event.setPublishedOn(LocalDateTime.now());
                 return EventMapper.toEventDto(eventRepository.save(event));
             } else {
                 throw new EventCantBeModifiedException("Event can't be published");
@@ -248,6 +260,7 @@ public class EventServiceImpl implements EventService {
     /**
      * Метод для отклонения события админом. Событие не должно быть уже опубликовано
      */
+    @Transactional
     @Override
     public EventDto rejectByAdmin(Long eventId) {
         if (eventRepository.findById(eventId).isEmpty()) {
@@ -266,6 +279,7 @@ public class EventServiceImpl implements EventService {
     /**
      * Метод для редактирования события админом
      */
+    @Transactional
     @Override
     public EventDto updateByAdmin(Long eventId, NewEventDto newEvent) {
         if (eventRepository.findById(eventId).isEmpty()) {
@@ -273,6 +287,8 @@ public class EventServiceImpl implements EventService {
         } else {
             Event event = eventRepository.findById(eventId).get();
             if (newEvent.getParticipantLimit() != 0
+                    && requestRepository.findByEventIdAndRequestStateIsNotIn(eventId,
+                    List.of(RequestState.CANCELLED, RequestState.REJECTED)).size() != 0
                     && newEvent.getParticipantLimit()
                     > requestRepository.findByEventIdAndRequestStateIsNotIn(eventId,
                     List.of(RequestState.CANCELLED, RequestState.REJECTED)).size()) {
@@ -296,6 +312,7 @@ public class EventServiceImpl implements EventService {
     /**
      * Метод для получения списка событий с параметрами фильтрации неавторизованным пользователем
      */
+    @Transactional(readOnly = true)
     @Override
     public List<EventDtoWithViews> getAllPublic(String text, List<Integer> categories, Boolean paid,
                                                 LocalDateTime rangeStart, LocalDateTime rangeEnd,
@@ -349,6 +366,7 @@ public class EventServiceImpl implements EventService {
     /**
      * Метод для получения информации о событии по его id неавторизованным пользователем
      */
+    @Transactional(readOnly = true)
     @Override
     public EventDtoWithViews getByIdPublic(Long eventId, String ip, String uri) {
         if (eventRepository.findById(eventId).isEmpty()) {

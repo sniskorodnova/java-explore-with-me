@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 /**
- * Класс, описывающий модель пользователя
+ * Класс, описывающий dto пользователя для бд
  */
 @Entity
 @Table(name = "users", schema = "public")
@@ -20,6 +20,6 @@ public class User {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 }

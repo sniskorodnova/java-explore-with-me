@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 /**
- * Класс, описывающий модель категории
+ * Класс, описывающий dto категории для бд
  */
 @Entity
 @Table(name = "category", schema = "public")
@@ -18,6 +18,6 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 }

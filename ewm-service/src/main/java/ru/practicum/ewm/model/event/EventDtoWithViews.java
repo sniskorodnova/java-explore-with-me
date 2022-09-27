@@ -7,27 +7,55 @@ import ru.practicum.ewm.model.category.CategoryDto;
 import ru.practicum.ewm.model.location.Location;
 import ru.practicum.ewm.model.users.User;
 
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Класс, описывающий dto события с просмотрами и созданными запросами для отдачи клиенту по api
+ */
 @Data
 @AllArgsConstructor
 public class EventDtoWithViews {
+    @NotNull
     private Long id;
+    @NotEmpty
+    @NotBlank
     private String title;
+    @NotEmpty
+    @NotBlank
     private String annotation;
+    @NotEmpty
+    @NotBlank
     private String description;
+    @NotNull
     private Location location;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    @NotNull
+    @Future
     private LocalDateTime eventDate;
+    @NotNull
     private CategoryDto category;
+    @NotNull
     private Boolean paid;
+    @PositiveOrZero
+    @NotNull
     private Long participantLimit;
+    @NotNull
     private Boolean requestModeration;
+    @NotNull
     private User initiator;
+    @NotNull
     private EventState status;
+    @NotNull
     private Long views;
+    @NotNull
     private Long confirmedRequests;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    @NotNull
+    private LocalDateTime createdOn;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    private LocalDateTime publishedOn;
 
     @Override
     public boolean equals(Object o) {

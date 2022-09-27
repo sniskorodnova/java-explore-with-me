@@ -1,5 +1,7 @@
 package ru.practicum.ewm.model.compilation;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.event.Event;
 import ru.practicum.ewm.model.event.EventDtoWithViews;
 import ru.practicum.ewm.model.event.EventMapper;
@@ -10,6 +12,7 @@ import java.util.Set;
 /**
  * Класс, описывающий маппинг сущности подборки событий в dto и обратно
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CompilationMapper {
     public static CompilationDto toCompilationDto(Compilation compilation) {
         Set<EventDtoWithViews> eventsWithViews = new HashSet<>();

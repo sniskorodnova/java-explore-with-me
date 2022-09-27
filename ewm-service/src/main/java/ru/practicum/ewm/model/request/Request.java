@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Класс, описывающий модель заявки на участие в событии
+ * Класс, описывающий dto заявки на участие в событии для бд
  */
 @Entity
 @Table(name = "request", schema = "public")
