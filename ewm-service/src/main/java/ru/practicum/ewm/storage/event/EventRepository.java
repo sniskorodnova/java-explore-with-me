@@ -35,8 +35,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Event findByInitiatorIdAndId(Long userId, Long eventId);
 
     @Query(value = "select * from event "
-            + "where (upper(event.title) ilike upper(concat('%', :text, '%')) "
-            + "or upper(event.annotation) ilike upper(('%', :text, '%'))) "
+            + "where (upper(event.title) like upper(concat('%', :text, '%')) "
+            + "or upper(event.annotation) like upper(('%', :text, '%'))) "
             + "and event.category_id in (:categories) and event.paid = :paid "
             + "and event.event_date >= :date and event.state = :state",
             nativeQuery = true)
@@ -44,8 +44,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                      String state);
 
     @Query(value = "select * from event "
-            + "where (upper(event.title) ilike upper(concat('%', :text, '%')) "
-            + "or upper(event.annotation) ilike upper(concat('%', :text, '%'))) "
+            + "where (upper(event.title) like upper(concat('%', :text, '%')) "
+            + "or upper(event.annotation) like upper(concat('%', :text, '%'))) "
             + "and event.category_id in (:categories) and event.paid = :paid "
             + "and event.event_date >= :rangeStart and event.event_date <= :rangeEnd and event.state = :state",
             nativeQuery = true)
