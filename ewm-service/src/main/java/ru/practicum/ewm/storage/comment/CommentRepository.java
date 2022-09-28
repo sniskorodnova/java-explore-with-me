@@ -12,5 +12,5 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByEventIdAndStatus(Long eventId, CommentStatus status);
 
-    List<Comment> findByEventId(Long eventId);
+    List<Comment> findByEventIdAndUserId(Long eventId, Long userId);
 }

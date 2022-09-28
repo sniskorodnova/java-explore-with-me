@@ -260,7 +260,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler
     protected ApiError handleCommentNotFound(CommentNotFoundException ex) {
-        ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
+        ApiError apiError = new ApiError(ErrorStatus._404_NOT_FOUND.code, ex);
         apiError.setMessage("No such comment");
         apiError.setReason(ex.getLocalizedMessage());
         if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {

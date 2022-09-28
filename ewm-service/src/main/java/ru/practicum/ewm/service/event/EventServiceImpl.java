@@ -10,6 +10,7 @@ import ru.practicum.ewm.model.category.CategoryMapper;
 import ru.practicum.ewm.model.comment.Comment;
 import ru.practicum.ewm.model.comment.CommentDto;
 import ru.practicum.ewm.model.comment.CommentMapper;
+import ru.practicum.ewm.model.comment.CommentStatus;
 import ru.practicum.ewm.model.event.*;
 import ru.practicum.ewm.model.location.Location;
 import ru.practicum.ewm.model.request.Request;
@@ -354,7 +355,8 @@ public class EventServiceImpl implements EventService {
                 eventWithViews.setConfirmedRequests(Long.parseLong(String.valueOf(confirmed.size())));
                 eventListWithView.add(eventWithViews);
                 List<CommentDto> commentsForEvent = new ArrayList<>();
-                for (Comment comment : commentRepository.findByEventId(eventInList.getId())) {
+                for (Comment comment : commentRepository.findByEventIdAndStatus(eventInList.getId(),
+                        CommentStatus.PUBLISHED)) {
                     commentsForEvent.add(CommentMapper.toCommentDto(comment));
                 }
                 eventWithViews.setComment(commentsForEvent);
@@ -394,7 +396,8 @@ public class EventServiceImpl implements EventService {
                 List<Request> confirmed = requestRepository.findByEventIdAndRequestState(eventId, RequestState.ACCEPTED);
                 eventWithViews.setConfirmedRequests(Long.parseLong(String.valueOf(confirmed.size())));
                 List<CommentDto> commentsForEvent = new ArrayList<>();
-                for (Comment comment : commentRepository.findByEventId(eventWithViews.getId())) {
+                for (Comment comment : commentRepository.findByEventIdAndStatus(eventWithViews.getId(),
+                        CommentStatus.PUBLISHED)) {
                     commentsForEvent.add(CommentMapper.toCommentDto(comment));
                 }
                 eventWithViews.setComment(commentsForEvent);

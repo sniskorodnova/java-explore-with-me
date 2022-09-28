@@ -48,12 +48,16 @@ public class CommentServiceImpl implements CommentService {
                     throw new UserCantCreateCommentException("Event with id = " + eventId + " is not PUBLISHED "
                             + "or it's date is in the future");
                 } else {
-                    Comment comment = CommentMapper.newToComment(newComment);
-                    comment.setUserId(userId);
-                    comment.setEventId(eventId);
-                    comment.setCreated(LocalDateTime.now());
-                    comment.setStatus(CommentStatus.PENDING);
-                    return CommentMapper.toCommentDto(commentRepository.save(comment));
+                    if (!commentRepository.findByEventIdAndUserId(eventId, userId).isEmpty()) {
+                        throw new UserCantCreateCommentException("User has already written a comment for this event");
+                    } else {
+                        Comment comment = CommentMapper.newToComment(newComment);
+                        comment.setUserId(userId);
+                        comment.setEventId(eventId);
+                        comment.setCreated(LocalDateTime.now());
+                        comment.setStatus(CommentStatus.PENDING);
+                        return CommentMapper.toCommentDto(commentRepository.save(comment));
+                    }
                 }
             }
         }

@@ -46,7 +46,7 @@ public class PrivateCommentController {
     /**
      * Метод для удаления комментария пользователем
      */
-    @DeleteMapping("/user/{userId}/comments/{commentId}")
+    @DeleteMapping("/users/{userId}/comments/{commentId}")
     public void deleteById(@RequestHeader(value = "X-Sharer-User-Id") Long userHeader,
                            @PathVariable Long userId, @PathVariable Long commentId) {
         log.info("Входящий запрос на удаление комментария с id = " + commentId + " пользователем с id = " + userId);
