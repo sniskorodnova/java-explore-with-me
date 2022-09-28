@@ -1,8 +1,12 @@
 package ru.practicum.ewm.model.comment;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Класс, описывающий маппинг сущности комментария в dto и обратно
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
     public static CommentDto toCommentDto(Comment comment) {
         return new CommentDto(

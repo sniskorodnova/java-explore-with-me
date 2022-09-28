@@ -12,6 +12,7 @@ import ru.practicum.ewm.storage.comment.CommentRepository;
 import ru.practicum.ewm.storage.event.EventRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -145,8 +146,7 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * Метод для получения комментария пользователем. Получить комментарий в любом статусе может только пользователь,
-     * который его создал. Также пользователь может получить комментарий к своему событию, если комментарий
-     * в статусе PUBLISHED
+     * который его создал
      */
     @Override
     public CommentDto getById(Long userId, Long commentId) {
@@ -167,15 +167,14 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public List<CommentDto> getAll(Long eventId) {
-        if (commentRepository.findById(commentId).isEmpty()) {
-            throw new CommentNotFoundException("There is no comment with id = " + commentId);
+        if (eventRepository.findById(eventId).isEmpty()) {
+            throw new EventNotFoundException("There is no event with id = " + eventId);
         } else {
-            if (!(commentRepository.findById(commentId).get().getUserId().equals(userId))) {
-                throw new UserCantModifyCommentException("Comment with id = " + commentId + " doesn't belong "
-                        + "to user with id = " + userId);
-            } else {
-                return CommentMapper.toCommentDto(commentRepository.findById(commentId).get());
+            List<CommentDto> foundList = new ArrayList<>();
+            for (Comment comment : commentRepository.findByEventIdAndStatus(eventId, CommentStatus.PUBLISHED)) {
+                foundList.add(CommentMapper.toCommentDto(comment));
             }
+            return foundList;
         }
     }
 }

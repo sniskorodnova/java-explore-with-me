@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Класс, описывающий модель комментария к событию
+ * Класс, описывающий dto комментария к событию в бд
  */
 @Entity
 @Table(name = "comment", schema = "public")
