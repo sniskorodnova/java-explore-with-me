@@ -2,6 +2,7 @@ package ru.practicum.ewm.service.comment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.CommentNotFoundException;
 import ru.practicum.ewm.exception.EventNotFoundException;
 import ru.practicum.ewm.exception.UserCantCreateCommentException;
@@ -30,35 +31,26 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
-     * Метод для создания комментария. Владелец события не может оставить комментарий к своему событию.
-     * Оставить комментарий можно только к опубликованному событию, дата которого в прошлом.
-     * Комментарий создается в статусе PENDING
+     * Метод для создания комментария. Владелец события может оставить комментарий к своему событию.
+     * Оставить комментарий можно только к опубликованному событию. Пользователь может оставлять
+     * несколько комментариев к одному событию (например, это будут ответы на вопросы других пользователей
+     * о данной событии). Комментарий создается в статусе PENDING
      */
+    @Transactional
     @Override
     public CommentDto create(Long userId, Long eventId, NewCommentDto newComment) {
         if (eventRepository.findById(eventId).isEmpty()) {
             throw new EventNotFoundException("There is no event with id = " + eventId);
         } else {
-            if (eventRepository.findById(eventId).get().getInitiator().getId().equals(userId)) {
-                throw new UserCantCreateCommentException("Event with id = " + eventId + " belongs to user "
-                        + "with id = " + userId);
+            if (!(eventRepository.findById(eventId).get().getEventState().equals(EventState.PUBLISHED))) {
+                throw new UserCantCreateCommentException("Event with id = " + eventId + " is not PUBLISHED");
             } else {
-                if (eventRepository.findById(eventId).get().getEventDate().isAfter(LocalDateTime.now())
-                        && !(eventRepository.findById(eventId).get().getEventState().equals(EventState.PUBLISHED))) {
-                    throw new UserCantCreateCommentException("Event with id = " + eventId + " is not PUBLISHED "
-                            + "or it's date is in the future");
-                } else {
-                    if (!commentRepository.findByEventIdAndUserId(eventId, userId).isEmpty()) {
-                        throw new UserCantCreateCommentException("User has already written a comment for this event");
-                    } else {
-                        Comment comment = CommentMapper.newToComment(newComment);
-                        comment.setUserId(userId);
-                        comment.setEventId(eventId);
-                        comment.setCreated(LocalDateTime.now());
-                        comment.setStatus(CommentStatus.PENDING);
-                        return CommentMapper.toCommentDto(commentRepository.save(comment));
-                    }
-                }
+                Comment comment = CommentMapper.newToComment(newComment);
+                comment.setUserId(userId);
+                comment.setEventId(eventId);
+                comment.setCreated(LocalDateTime.now());
+                comment.setStatus(CommentStatus.PENDING);
+                return CommentMapper.toCommentDto(commentRepository.save(comment));
             }
         }
     }
@@ -68,6 +60,7 @@ public class CommentServiceImpl implements CommentService {
      * его создал. Редактировать комментарии можно только в статусах PENDING и REJECTED. После редактирования
      * комментарий переходит в статус PENDING
      */
+    @Transactional
     @Override
     public CommentDto update(Long userId, Long commentId, NewCommentDto newComment) {
         if (commentRepository.findById(commentId).isEmpty()) {
@@ -94,6 +87,7 @@ public class CommentServiceImpl implements CommentService {
      * Метод для публикации комментария админом. Опубликовать комментарий можно в статусе PENDING. После
      * публикации статус комментария меняется на PUBLISHED
      */
+    @Transactional
     @Override
     public CommentDto publishByAdmin(Long commentId) {
         if (commentRepository.findById(commentId).isEmpty()) {
@@ -113,6 +107,7 @@ public class CommentServiceImpl implements CommentService {
      * Метод для отклонения комментария админом. Отклонить комментарий можно в статусах PENDING и
      * PUBLISHED. После отклонения статус комментария меняется на REJECTED
      */
+    @Transactional
     @Override
     public CommentDto rejectByAdmin(Long commentId) {
         if (commentRepository.findById(commentId).isEmpty()) {
@@ -134,6 +129,7 @@ public class CommentServiceImpl implements CommentService {
      * Метод для удаления комментария пользователем. Удалить комментарий может только пользователь, который
      * его создал. Удалить можно комментарий из любого статуса
      */
+    @Transactional
     @Override
     public void deleteById(Long userId, Long commentId) {
         if (commentRepository.findById(commentId).isEmpty()) {
@@ -152,6 +148,7 @@ public class CommentServiceImpl implements CommentService {
      * Метод для получения комментария пользователем. Получить комментарий в любом статусе может только пользователь,
      * который его создал
      */
+    @Transactional(readOnly = true)
     @Override
     public CommentDto getById(Long userId, Long commentId) {
         if (commentRepository.findById(commentId).isEmpty()) {
@@ -169,6 +166,7 @@ public class CommentServiceImpl implements CommentService {
     /**
      * Метод для получения всех опубликованных комментариев к событию
      */
+    @Transactional(readOnly = true)
     @Override
     public List<CommentDto> getAll(Long eventId) {
         if (eventRepository.findById(eventId).isEmpty()) {
