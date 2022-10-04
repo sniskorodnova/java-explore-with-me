@@ -355,8 +355,8 @@ public class EventServiceImpl implements EventService {
                 eventWithViews.setConfirmedRequests(Long.parseLong(String.valueOf(confirmed.size())));
                 eventListWithView.add(eventWithViews);
                 List<CommentDto> commentsForEvent = new ArrayList<>();
-                for (Comment comment : commentRepository.findByEventIdAndStatus(eventInList.getId(),
-                        CommentStatus.PUBLISHED)) {
+                for (Comment comment : commentRepository.findByEventIdAndStatusWithPagination(eventInList.getId(),
+                        CommentStatus.PUBLISHED, PageRequest.of(from / size, size))) {
                     commentsForEvent.add(CommentMapper.toCommentDto(comment));
                 }
                 eventWithViews.setComment(commentsForEvent);

@@ -29,4 +29,15 @@ public class CommentMapper {
                 null
         );
     }
+
+    public static Comment updateToComment(UpdateCommentDto updateCommentDto) {
+        return new Comment(
+                null,
+                updateCommentDto.getText(),
+                null,
+                null,
+                null,
+                null
+        );
+    }
 }

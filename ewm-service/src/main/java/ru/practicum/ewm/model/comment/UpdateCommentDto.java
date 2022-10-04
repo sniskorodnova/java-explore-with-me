@@ -8,12 +8,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 /**
- * Класс, описывающий dto комментария к событию для получения от клиента по api при создании
+ * Класс, описывающий dto комментария к событию для получения от клиента по api при обновлении
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewCommentDto {
+public class UpdateCommentDto {
     @NotEmpty
     @NotBlank
     private String text;
