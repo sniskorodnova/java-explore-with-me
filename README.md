@@ -1,2 +1,5 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+Дипломный проект java-explore-with-me:
+
+Ссылка на пулл-реквест:
+https://github.com/sniskorodnova/java-explore-with-me/pull/1
