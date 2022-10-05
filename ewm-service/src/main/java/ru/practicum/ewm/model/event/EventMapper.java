@@ -46,7 +46,8 @@ public class EventMapper {
                 null,
                 null,
                 event.getCreatedOn(),
-                event.getPublishedOn()
+                event.getPublishedOn(),
+                null
         );
     }
 

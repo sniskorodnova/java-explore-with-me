@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.*;
 import ru.practicum.ewm.model.category.CategoryMapper;
+import ru.practicum.ewm.model.comment.Comment;
+import ru.practicum.ewm.model.comment.CommentDto;
+import ru.practicum.ewm.model.comment.CommentMapper;
+import ru.practicum.ewm.model.comment.CommentStatus;
 import ru.practicum.ewm.model.event.*;
 import ru.practicum.ewm.model.location.Location;
 import ru.practicum.ewm.model.request.Request;
@@ -14,6 +18,7 @@ import ru.practicum.ewm.model.request.RequestState;
 import ru.practicum.ewm.model.stats.NewStatsDto;
 import ru.practicum.ewm.model.users.User;
 import ru.practicum.ewm.storage.category.CategoryRepository;
+import ru.practicum.ewm.storage.comment.CommentRepository;
 import ru.practicum.ewm.storage.event.EventRepository;
 import ru.practicum.ewm.storage.location.LocationRepository;
 import ru.practicum.ewm.storage.request.RequestRepository;
@@ -31,20 +36,22 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
     private final EventClient eventClient;
-
     private final RequestRepository requestRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository, LocationRepository locationRepository,
                             UserRepository userRepository, EventClient eventClient,
-                            RequestRepository requestRepository, CategoryRepository categoryRepository) {
+                            RequestRepository requestRepository, CategoryRepository categoryRepository,
+                            CommentRepository commentRepository) {
         this.eventRepository = eventRepository;
         this.locationRepository = locationRepository;
         this.userRepository = userRepository;
         this.eventClient = eventClient;
         this.requestRepository = requestRepository;
         this.categoryRepository = categoryRepository;
+        this.commentRepository = commentRepository;
     }
 
     /**
@@ -347,6 +354,12 @@ public class EventServiceImpl implements EventService {
                         RequestState.ACCEPTED);
                 eventWithViews.setConfirmedRequests(Long.parseLong(String.valueOf(confirmed.size())));
                 eventListWithView.add(eventWithViews);
+                List<CommentDto> commentsForEvent = new ArrayList<>();
+                for (Comment comment : commentRepository.findByEventIdAndStatusWithPagination(eventInList.getId(),
+                        CommentStatus.PUBLISHED, PageRequest.of(from / size, size))) {
+                    commentsForEvent.add(CommentMapper.toCommentDto(comment));
+                }
+                eventWithViews.setComment(commentsForEvent);
             }
             if (sort.equals("EVENT_DATE")) {
                 eventListWithView.sort(new EventDateComparator());
@@ -382,6 +395,12 @@ public class EventServiceImpl implements EventService {
                         .findById(eventWithViews.getCategory().getId()).orElseThrow()));
                 List<Request> confirmed = requestRepository.findByEventIdAndRequestState(eventId, RequestState.ACCEPTED);
                 eventWithViews.setConfirmedRequests(Long.parseLong(String.valueOf(confirmed.size())));
+                List<CommentDto> commentsForEvent = new ArrayList<>();
+                for (Comment comment : commentRepository.findByEventIdAndStatus(eventWithViews.getId(),
+                        CommentStatus.PUBLISHED)) {
+                    commentsForEvent.add(CommentMapper.toCommentDto(comment));
+                }
+                eventWithViews.setComment(commentsForEvent);
                 return eventWithViews;
             } else {
                 throw new UserNotAllowedToViewEventException("Event can't be viewed due to its status");

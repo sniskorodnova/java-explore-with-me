@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.practicum.ewm.model.category.CategoryDto;
+import ru.practicum.ewm.model.comment.CommentDto;
 import ru.practicum.ewm.model.location.Location;
 import ru.practicum.ewm.model.users.User;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -56,6 +58,7 @@ public class EventDtoWithViews {
     private LocalDateTime createdOn;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime publishedOn;
+    private List<CommentDto> comment;
 
     @Override
     public boolean equals(Object o) {

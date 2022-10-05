@@ -231,4 +231,43 @@ public class RestExceptionHandler {
         }
         return apiError;
     }
+
+    @ExceptionHandler
+    protected ApiError handleUserCantCreateComment(UserCantCreateCommentException ex) {
+        ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
+        apiError.setMessage("Comment can't be created");
+        apiError.setReason(ex.getLocalizedMessage());
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
+        return apiError;
+    }
+
+    @ExceptionHandler
+    protected ApiError handleUserCantModifyComment(UserCantModifyCommentException ex) {
+        ApiError apiError = new ApiError(ErrorStatus._400_BAD_REQUEST.code, ex);
+        apiError.setMessage("Comment can't be modified");
+        apiError.setReason(ex.getLocalizedMessage());
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
+        return apiError;
+    }
+
+    @ExceptionHandler
+    protected ApiError handleCommentNotFound(CommentNotFoundException ex) {
+        ApiError apiError = new ApiError(ErrorStatus._404_NOT_FOUND.code, ex);
+        apiError.setMessage("No such comment");
+        apiError.setReason(ex.getLocalizedMessage());
+        if (Arrays.stream(ex.getStackTrace()).findFirst().isPresent()) {
+            apiError.setErrors(Arrays.stream(ex.getStackTrace()).findFirst().get().toString());
+        } else {
+            apiError.setErrors(null);
+        }
+        return apiError;
+    }
 }
