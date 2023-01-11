@@ -1,4 +1,4 @@
-package ru.practicum.ewm.service.category;
+package ru.practicum.ewm.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
